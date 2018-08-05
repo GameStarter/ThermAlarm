@@ -8,20 +8,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using ThermAlarm_FrontEnd_WebApp.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace ThermAlarm_BackEnd
+namespace ThermAlarm_FrontEnd_WebApp
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
+            var host= BuildWebHost(args);
             MigrateDatabase(host);
             host.Run();
         }
 
-        //just copied what i needed for db, not sure it's good enough.
+        //now, instead of here, it being connected to db, it'll be connected to backend, and send all info to it.
+
         public static void MigrateDatabase(IWebHost host)
         {
             using (var scope = host.Services.CreateScope())
