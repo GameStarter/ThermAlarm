@@ -17,21 +17,21 @@ namespace ThermAlarm_BackEnd
         public static void Main(string[] args)
         {
             var host = BuildWebHost(args);
-            MigrateDatabase(host);
+            //MigrateDatabase(host);// because fails below
             host.Run();
         }
-
+        /*
         //just copied what i needed for db, not sure it's good enough.
         public static void MigrateDatabase(IWebHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
                 var context = scope.ServiceProvider
-                              .GetRequiredService<ApplicationDbContext>();
+                              .GetRequiredService<ApplicationDbContext>();// latter part fails
                 context.Database.Migrate();
             }
         }
-
+        */
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
