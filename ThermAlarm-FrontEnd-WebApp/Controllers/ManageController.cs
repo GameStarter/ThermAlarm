@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -101,8 +102,15 @@ namespace ThermAlarm_FrontEnd_WebApp.Controllers
                     throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
                 }
             }
-
+       
             StatusMessage = "Your profile has been updated";
+            var client = new HttpClient();
+            var endpoint = "http://localhost:64611/api/WebApp";
+            var response = await client.PutAsJsonAsync(endpoint, user); //TODO, may not be user, since not updated
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");//TODO may change to following
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -174,7 +182,13 @@ namespace ThermAlarm_FrontEnd_WebApp.Controllers
             await _signInManager.SignInAsync(user, isPersistent: false);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
-
+            var client = new HttpClient();
+            var endpoint = "http://localhost:64611/api/WebApp";
+            var response = await client.PutAsJsonAsync(endpoint, user);// TODO, may not be user, since not updated
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
             return RedirectToAction(nameof(ChangePassword));
         }
 
@@ -222,7 +236,13 @@ namespace ThermAlarm_FrontEnd_WebApp.Controllers
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             StatusMessage = "Your password has been set.";
-
+            var client = new HttpClient();
+            var endpoint = "http://localhost:64611/api/WebApp";
+            var response = await client.PutAsJsonAsync(endpoint, user);//TODO, may not be user, since not updated
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");//TODO again
+            }
             return RedirectToAction(nameof(SetPassword));
         }
 
@@ -288,7 +308,8 @@ namespace ThermAlarm_FrontEnd_WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
+        public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)//TODO check what it rlly means, and add
+            //http client accordingly, if necessary
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

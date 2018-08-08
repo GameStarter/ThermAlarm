@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Options;
 using ThermAlarm_FrontEnd_WebApp.Models;
 using ThermAlarm_FrontEnd_WebApp.Models.AccountViewModels;
 using ThermAlarm_FrontEnd_WebApp.Services;
+
 
 namespace ThermAlarm_FrontEnd_WebApp.Controllers
 {
@@ -232,7 +234,14 @@ namespace ThermAlarm_FrontEnd_WebApp.Controllers
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    var client = new HttpClient();
+                    var endpoint = "http://localhost:64611/api/WebApp";
+                    var response = await client.PostAsJsonAsync(endpoint, user);//TODO possibly result instead of user
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");//TODO maybe delete this part?/ merge?/ just print?
+                    }
+                        return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
